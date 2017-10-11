@@ -1,6 +1,19 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
+  helper_method :current_user,
+                :validate_user
+
+  def current_user
+    @current_user ||= User.find(session[:user_id]) unless session[:user_id].nil?
+  end
+
+  def validate_user
+    unless @current_user
+      redirect_to root_path
+    end
+  end
+
   protected
 
   def format_bearer_token_request
@@ -13,13 +26,5 @@ class ApplicationController < ActionController::Base
                    redirect_uri: "http://localhost:3000/login" }
     end
   end
-
-  # def send_bearer_token_request(faraday_object)
-  #   faraday_object.post do |req|
-  #     req.body = { data: { grant_type: "authorization_code",
-  #                  code: session[:code],
-  #                  redirect_uri: "http://localhost:3000/login" }}
-  #   end
-  # end
 
 end
