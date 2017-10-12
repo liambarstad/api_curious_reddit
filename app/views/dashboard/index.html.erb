@@ -1,1 +1,9 @@
-<h1>Congrats!</h1>
+<h1>Welcome <%= @user.name %>!</h1>
+
+<div>
+  <h4>Karma:<h4>
+  <ul>
+    <li>Link: <%= @user.link_karma %></li>
+    <li>Comment: <%= @user.comment_karma %></li>
+  </ul>
+</div>
