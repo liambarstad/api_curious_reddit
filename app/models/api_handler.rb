@@ -19,7 +19,7 @@ class ApiHandler
   def subscriptions
     if check_scope("mysubreddits")
       response = get_parse("/subreddits/mine/subscriber")
-
+      binding.pry
     else; return "Scope is not available"; end
   end
 

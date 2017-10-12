@@ -1,9 +1,7 @@
 class DashboardController < ApplicationController
-  before_action :verify_code
+  before_action :verify_code, :set_api_handler
 
   def index
-    bearer = BearerToken.get_bearer_token(session[:code])
-    @api_handler = ApiHandler.new(bearer)
     info = @api_handler.basic_info
     if !(info.is_a?(String))
       user = User.find_or_create_by(name: info[:name])

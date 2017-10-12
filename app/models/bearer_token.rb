@@ -2,16 +2,21 @@ require 'time'
 
 class BearerToken
   attr_reader :scope
-  def initialize(response)
+  def initialize(response={})
     @access_token = response["access_token"]
-    @expiration_time = DateTime.now + Rational(response["expires_in"], 86400)
-    @scope = response["scope"].split
+    @expiration_time = DateTime.now + Rational(response["expires_in"].to_i, 86400)
+    @scope = response["scope"].to_s.split
     @refresh_token = response["refresh_token"]
   end
 
   def self.get_bearer_token(code)
     bearer_token = get_bearer_object(code)
     new(bearer_token)
+  end
+
+  def self.reinitialize(object)
+    bearer = new
+    bearer.set_to(object)
   end
 
   def get_refresh_bearer_object
@@ -32,7 +37,15 @@ class BearerToken
     end
   end
 
+  def set_to(object)
+    set(object)
+    return self
+  end
+
   private
+
+  attr_accessor :access_token, :expiration_time, :refresh_token
+  attr_writer :scope
 
   def self.get_bearer_object(code)
     conn = format_bearer_token_request(code)
@@ -73,6 +86,14 @@ class BearerToken
         initialize(ref)
       else; return nil; end
     else; return true; end
+  end
+
+  def set(object)
+    @access_token = object["access_token"]
+    @expiration_time = object["expiration_time"]
+    @scope = object["scope"]
+    @refresh_token = object["refresh_token"]
+    return self
   end
 
 end
