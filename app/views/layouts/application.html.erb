@@ -6,9 +6,35 @@
 
     <%= stylesheet_link_tag    'application', media: 'all' %>
     <%= javascript_include_tag 'application' %>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="stylesheets/materialize.min.css"  media="screen,projection"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   </head>
 
   <body>
-    <%= yield %>
+    <header>
+      <div class="topMain">
+        <%= image_tag "/assets/top_logo", id: "topImage" %>
+        <a id="mainTitle">Haven'tReddit</a>
+      </div>
+    </header>
+    <nav>
+      <div class="nav-wrapper">
+        <a href="#" class="brand-logo"></a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+          <li><%= link_to "Subreddit Subscriptions", user_subreddits_path %></li>
+          <li><a>Create Subreddit</a></li>
+          <li><a>Private Messages</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div id="mainBody">
+      <%= yield %>
+    </div>
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="javascripts/materialize.min.js"></script>
   </body>
 </html>

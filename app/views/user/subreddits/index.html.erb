@@ -1,1 +1,17 @@
+<img src="https://b.thumbs.redditmedia.com/iTldIIlQVSoH6SPlH9iiPZZVzFWubJU7cOM__uqSOqU.png"/>
 <h1>You Made It!</h1>
+
+<% @subreddits.each do |subreddit| %>
+  <div class="container">
+    <div class="subreddit row">
+      <div class="col-md-3">
+        <%= image_tag subreddit.header_img %>
+      </div>
+      <div class="col-md-9">
+        <p class="subredditTitle"><%= subreddit.name %></p>
+        <p class="subredditSubtitle"><%= subreddit.subtitle %></p>
+        <p class="subredditDesc"><%= truncate(subreddit.description) %></p>
+      </div>
+    </div>
+  </div>
+<% end %>

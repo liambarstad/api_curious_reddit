@@ -16,10 +16,11 @@ class ApiHandler
     else; return "Scope is not available"; end
   end
 
-  def subscriptions
+  def update_subreddits(user)
     if check_scope("mysubreddits")
       response = get_parse("/subreddits/mine/subscriber")
       binding.pry
+      Subreddit.update_from_response(response, user)
     else; return "Scope is not available"; end
   end
 
