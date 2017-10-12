@@ -1,11 +1,9 @@
 class DashboardController < ApplicationController
-  before_action :validate_user
 
   def index
-    conn = BearerToken.format_bearer_token_request
-    response = conn.post
-    bearer_token = JSON.parse(response.body)
-    @bearer = BearerToken.create(bearer_token)
+    bearer = BearerToken.get_bearer_token(session[:code])
+    @api_handler = ApiHandler.new(bearer, session[:code])
+    @api_handler.basic_info
   end
 
 end
