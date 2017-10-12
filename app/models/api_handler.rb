@@ -19,8 +19,10 @@ class ApiHandler
   def update_subreddits(user)
     if check_scope("mysubreddits")
       response = get_parse("/subreddits/mine/subscriber")
-      binding.pry
-      Subreddit.update_from_response(response, user)
+      if response
+        Subreddit.update_from_response(response, user)
+        return true
+      else; return "Session has expired, please log in"; end
     else; return "Scope is not available"; end
   end
 
