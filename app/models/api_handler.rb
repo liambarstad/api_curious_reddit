@@ -1,28 +1,26 @@
 class ApiHandler
-  def initialize(token, code)
+  def initialize(token)
     @bearer = token
-    @code = code
   end
 
   def basic_info
     if check_scope("identity")
-      build = @bearer.authorize_api_call(@code)
-      response = build.get("/api/v1/me")
-      traits = JSON.parse(response.body)
-      if traits["is_suspended"] == false
-        return {name: traits["name"],
-                link_karma: traits["link_karma"],
-                comment_karma: traits["comment_karma"]}
-      else; return nil; end
-    else; return nil; end
-  end
-
-  def karma
-
+      response = get_parse("/api/v1/me")
+      if response
+        if response["is_suspended"] == false
+          return {name: response["name"],
+                  link_karma: response["link_karma"],
+                  comment_karma: response["comment_karma"]}
+        else; return "Account has been suspended"; end
+      else; return "Session has expired, please log in"; end
+    else; return "Scope is not available"; end
   end
 
   def subscriptions
+    if check_scope("mysubreddits")
+      response = get_parse("/subreddits/mine/subscriber")
 
+    else; return "Scope is not available"; end
   end
 
   def create_subreddit
@@ -33,6 +31,14 @@ class ApiHandler
 
   def check_scope(scope)
     @bearer.scope.include?(scope)
+  end
+
+  def get_parse(path)
+    build = @bearer.authorize_api_call
+    if build
+      response = build.get(path)
+      return JSON.parse(response.body)
+    else; return nil; end
   end
 
 end

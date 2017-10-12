@@ -14,22 +14,21 @@ class BearerToken
     new(bearer_token)
   end
 
-  def get_refresh_bearer_object(code)
-    if !(@refresh_token.nil?)
+  def get_refresh_bearer_object
+    if @refresh_token
       conn = format_refresh_token_request
       response = conn.post
       JSON.parse(response.body)
-    else
-      self.class.get_bearer_object(code)
-    end
+    else; return nil; end
   end
 
-  def authorize_api_call(code)
-    replace_if_expired(code)
-    Faraday.new(url: "https://oauth.reddit.com") do |req|
-      req.request :multipart
-      req.adapter :net_http
-      req.headers.store("Authorization", "bearer " + @access_token)
+  def authorize_api_call
+    if replace_if_expired
+      Faraday.new(url: "https://oauth.reddit.com") do |req|
+        req.request :multipart
+        req.adapter :net_http
+        req.headers.store("Authorization", "bearer " + @access_token)
+      end
     end
   end
 
@@ -67,10 +66,13 @@ class BearerToken
     { grant_type: "refresh_token", refresh_token: @refresh_token }
   end
 
-  def replace_if_expired(code)
+  def replace_if_expired
     if DateTime.now >= @expiration_time
-      initialize(get_refresh_bearer_object(code))
-    end
+      ref = get_refresh_bearer_object
+      if ref["error"].nil?
+        initialize(ref)
+      else; return nil; end
+    else; return true; end
   end
 
 end

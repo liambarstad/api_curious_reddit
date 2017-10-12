@@ -1,9 +1,11 @@
-<h1>Welcome <%= @user.name %>!</h1>
+<h1>Welcome <%= current_user.name %>!</h1>
 
 <div>
   <h4>Karma:<h4>
   <ul>
-    <li>Link: <%= @user.link_karma %></li>
-    <li>Comment: <%= @user.comment_karma %></li>
+    <li>Link: <%= current_user.link_karma %></li>
+    <li>Comment: <%= current_user.comment_karma %></li>
   </ul>
 </div>
+
+<%= link_to "My Subreddits", user_subreddits_path %>
