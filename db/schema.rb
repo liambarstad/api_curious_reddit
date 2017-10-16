@@ -10,7 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171012173402) do
+ActiveRecord::Schema.define(version: 20171012212605) do
+
+  create_table "posts", force: :cascade do |t|
+    t.string "title"
+    t.string "author"
+    t.string "image"
+    t.text "body"
+    t.string "link"
+    t.integer "subreddit_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "uid"
+    t.index ["subreddit_id"], name: "index_posts_on_subreddit_id"
+  end
 
   create_table "subreddits", force: :cascade do |t|
     t.string "title"

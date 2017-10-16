@@ -6,7 +6,7 @@
         <%= image_tag subreddit.image_path, size: '75' %>
       </div>
       <div class="col-md-9">
-        <p class="subredditTitle"><%= subreddit.title %></p>
+        <p class="subredditTitle"><%= link_to subreddit.title, user_subreddit_path(subreddit) %></p>
         <p class="subredditSubtitle"><%= subreddit.subtitle %></p>
         <p class="subredditDesc"><%= truncate(subreddit.description) %></p>
       </div>

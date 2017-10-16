@@ -11,4 +11,10 @@ class User::SubredditsController < ApplicationController
     end
   end
 
+  def show
+    @subreddit = Subreddit.find(params[:id])
+    @api_handler.update_posts(@subreddit)
+    @posts = @subreddit.posts
+  end
+
 end

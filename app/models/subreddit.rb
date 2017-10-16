@@ -1,12 +1,12 @@
 class Subreddit < ApplicationRecord
   has_many :subscriptions
+  has_many :posts
   has_many :users, through: :subscriptions
 
   before_save :set_default_image
 
   def self.update_from_response(response, user)
-    subreddits = response["data"]["children"]
-    subreddits.each do |js_object|
+    response["data"]["children"].each do |js_object|
       rb_object = find_or_create_by(uid: js_object["data"]["name"])
       rb_object.update(title: js_object["data"]["display_name"],
                        subtitle: js_object["data"]["title"],

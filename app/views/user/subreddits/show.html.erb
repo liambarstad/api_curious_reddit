@@ -1,0 +1,20 @@
+<ul>
+  <li><%= image_tag @subreddit.image_path, size: '125' %></li>
+  <li><%= @subreddit.title %></li>
+  <li><%= @subreddit.subtitle %></li>
+  <li><%= @subreddit.description %></li>
+</ul>
+
+<div class="container">
+  <% @posts.each do |post| %>
+    <div class="row">
+      <div class="col-md-3">
+        <%= image_tag post.image, size: '75' %>
+      </div>
+      <div class="col-md-9">
+        <%= post.title %>
+        <%= post.author %>
+      </div>
+    </div>
+  <% end %>
+</div>

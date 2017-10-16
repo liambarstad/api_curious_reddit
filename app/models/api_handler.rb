@@ -4,26 +4,31 @@ class ApiHandler
   end
 
   def basic_info
-    if check_scope("identity")
+    catch(1) do
+      check_scope("identity")
       response = get_parse("/api/v1/me")
-      if response
-        if response["is_suspended"] == false
-          return {name: response["name"],
-                  link_karma: response["link_karma"],
-                  comment_karma: response["comment_karma"]}
-        else; return "Account has been suspended"; end
-      else; return "Session has expired, please log in"; end
-    else; return "Scope is not available"; end
+      check_response(response)
+      check_if_suspended(response)
+      return {name: response["name"], link_karma: response["link_karma"], comment_karma: response["comment_karma"]}
+    end
   end
 
   def update_subreddits(user)
-    if check_scope("mysubreddits")
+    catch(1) do
+      check_scope("mysubreddits")
       response = get_parse("/subreddits/mine/subscriber")
-      if response
-        Subreddit.update_from_response(response, user)
-        return true
-      else; return "Session has expired, please log in"; end
-    else; return "Scope is not available"; end
+      check_response(response)
+      Subreddit.update_from_response(response, user); return true
+    end
+  end
+
+  def update_posts(subreddit)
+    catch(1) do
+      check_scope("...")
+      response = get_parse("/r/#{subreddit.title}")
+      check_response(response)
+      Post.update_from_response(response, subreddit); return true
+    end
   end
 
   def create_subreddit
@@ -33,15 +38,36 @@ class ApiHandler
   private
 
   def check_scope(scope)
-    @bearer.scope.include?(scope)
+    if !(@bearer.scope.include?(scope))
+      throw(1, "Scope is not available")
+    end
+  end
+
+  def check_response(response)
+    if response.nil?
+      throw(1, "Session has expired, please log in")
+    end
+  end
+
+  def check_if_suspended(response)
+    if response["is_suspended"] == true
+      throw(1, "Account has been suspended")
+    end
   end
 
   def get_parse(path)
-    build = @bearer.authorize_api_call
-    if build
+    catch(2) do
+      build = @bearer.authorize_api_call
+      check_call(build)
       response = build.get(path)
       return JSON.parse(response.body)
-    else; return nil; end
+    end
+  end
+
+  def check_call(call)
+    if call.nil?
+      throw(2, nil)
+    end
   end
 
 end
